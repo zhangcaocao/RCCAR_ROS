@@ -1,0 +1,68 @@
+#include "Arduino.h"
+#include "PID.h"
+
+double max_error = 100;
+
+
+PID::PID(float min_val, float max_val, float kp, float ki, float kd):
+    min_val_(min_val),
+    max_val_(max_val),
+    kp_(kp),
+    ki_(ki),
+    kd_(kd)
+{
+}
+
+double PID::compute(float setpoint, float measured_value)
+{
+    double error;
+    double pid;
+
+    //setpoint is constrained between min and max to prevent pid from having too much error
+    error = setpoint - measured_value;
+    if (error > 0)
+    {
+        if (error >= max_error)
+        {
+            error = max_error;
+        }
+    }else{
+        if (error <= -max_error)
+        {
+            error = -max_error;
+        }
+
+    }
+
+    integral_ += error;
+    derivative_ = error - prev_error_;
+
+    if(setpoint == 0 && error == 0)
+    {
+        integral_ = 0;
+    }
+
+    pid = (kp_ * error) + (ki_ * integral_) + (kd_ * derivative_);
+    prev_error_ = error;
+
+    // double diff = pid - pre_pid;
+    // if (diff >= pid_increment){                  //currently solved with 60Hz refresh on callbacks from node
+    //     normal_pid += pid_increment;            
+    // }
+    // else if (diff <= -pid_increment) {
+    //     normal_pid -= pid_increment;
+    // }
+    // else {
+    //     normal_pid = pid;
+    // }
+    // pre_pid = pid;
+
+    return constrain(pid, min_val_, max_val_);
+}
+
+void PID::updateConstants(float kp, float ki, float kd)
+{
+    kp_ = kp;
+    ki_ = ki;
+    kd_ = kd;
+}
