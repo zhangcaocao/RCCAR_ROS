@@ -12,4 +12,8 @@
 
 
 全局规划使用的是 Dijkstra 算法（A*算法也问题不大，差不多）。局部规划使用的是[Teb](http://wiki.ros.org/teb_local_planner)
-使用方法详见 [linorobot/README.md](linorobot/README.md)
+
+使用方法详见 [linorobot/README.md](linorobot/README.md)，一步一步跟着走就能成功，祝你好运！
+
+
+最后由衷感谢[linorobot](https://github.com/linorobot)所做的工作！
